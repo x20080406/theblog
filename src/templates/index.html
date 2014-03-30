@@ -1,0 +1,48 @@
+{% extends 'blog_layout.html' %}
+{% from 'macros.jinja' import front_pagination with context %}
+
+{% block title %}
+{%if request.view_args['param']%}
+	{{request.view_args['param']}}
+{%endif%}
+{% endblock %}
+{% block content %}
+			<div class="blog-index">
+			 	{% for item in paginate.items%}
+				<article>
+					<header>
+						<h1 class="entry-title">
+							<a href="{{url_for('blog_topic',id=item.id,title=item.title)}}"
+								rel="bookmark" title="{{item.title}}">{{item.title}}</a>
+						</h1>
+						<p class="meta">
+							<small>
+							<time datetime="{{item.add_time}}" pubdate data-updated="true">{{item.add_time}}</time>
+							{% for category in item.categories%}
+							<a href="{{url_for('blog_category',page=1,param=category.name)}}" rel="category tag">{{category.name}}</a> 
+							{%endfor%}
+							</small>
+						</p>
+					</header>
+					<div class="entry-content">
+					{{item.content[0:300]}}
+					</div>
+					<small style="color: #999">Tags: 
+						{% for t in item.tags%}
+						<a href="{{url_for('blog_tag',page=1,param=t.name)}}" rel="tag">{{t.name}}</a>&nbsp;
+						{%endfor%}
+					</small>
+					<footer>
+						<a rel="full-article"
+							href="{{url_for('blog_topic',id=item.id, title=item.title)}}">Read On</a>
+					</footer>
+				</article>
+				{%endfor%}
+				<nav role="pagination">
+					{% autoescape false %}
+		 				{{ front_pagination(paginate,prefix=prefix,suffix=suffix) }}
+					{% endautoescape %}
+				</nav>
+			</div>
+			{% include 'aside.html' %}
+{% endblock %}

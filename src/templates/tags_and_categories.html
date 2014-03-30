@@ -1,0 +1,19 @@
+{% extends 'blog_layout.html' %}
+{% block title %}
+Tags
+{% endblock %}
+<!-- block content -->
+{% block content %}
+<div>
+<article role="article">
+{%for item in items%}
+	<a href="{{url_for(_endpoint,page=1,param=item)}}">{{item}}(<em>{{items[item]}}</em>)</a>&nbsp;&nbsp;&nbsp;&nbsp;
+{%endfor%}
+</article>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+$('body').addClass('no-sidebar');
+})
+</script>
+{% endblock %}

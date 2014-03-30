@@ -1,0 +1,187 @@
+{% extends 'blog_layout.html' %}
+{% block title %}
+{{article.title}}
+{% endblock %}
+<!-- block content -->
+{% block content %}
+   <div>
+    <article class="hentry" role="article">
+        <header>
+            <h1 class="entry-title">{{article.title}}</h1>
+            <p class="meta">
+                <small>
+                <time datetime="{{ article.add_time}}" pubdate data-updated="true">{{article.add_time.strftime('%Y-%m-%d')}}</time>
+                </small>
+            </p>
+
+        </header>
+        <div class="entry-content" id="postcondiv">
+        {{content}}
+        </div>
+        <footer>
+            <p class="meta grey">
+                <span class="categories greyhref">
+                    category:
+                    {% for c in article.categories%}
+					<a href="{{url_for('blog_category',page=1, param =c.name)}}" rel="category tag">{{c.name}}</a> 
+					{%endfor%}
+                </span>
+                <span class="categories greyhref">
+                  | Tags: {% for t in article.tags%}
+						<a href="{{url_for('blog_tag',page=1,param =t.name)}}" rel="tag">{{t.name}}</a>&nbsp;
+						{%endfor%}
+                </span>
+            </p>
+            
+            <div  style="display:block;margin-bottom:20px;">
+            <!-- JiaThis Button BEGIN -->
+            <div id="jiathis_style_32x32"><span class="jiathis_txt">分享到：</span>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_ishare"></a>
+            <a class="jiathis_button_renren"></a>
+            <a class="jiathis_button_baidu"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+            </div>
+            <script type="text/javascript" >
+            var jiathis_config={
+            summary:"",
+            hideMore:false
+            }
+            </script>
+            <script type="text/javascript" src="http://v2.jiathis.com/code_mini/jia.js" charset="utf-8"></script>
+            <!-- JiaThis Button END -->
+            <div class="c"></div>
+            </div>            
+            
+        </footer>
+    </article>
+    <!-- new comment -->
+    <!-- <section>
+    <div id="respond" class="topline">
+    
+<h2 class="respond">Write a Comment</h2>
+<form action="http://saepy.sinaapp.com/topic/12/sae-python-使用memcache-手记" method="post" id="commentform">
+    <p>
+    <input type="text" id="author" name="author" placeholder="First and last name" required tabindex="1" /> 
+    <label for="name">* Name (required)</label> 
+    </p>
+    <p> 
+    <input type="text" id="email" name="email" placeholder="example@domain.com" required tabindex="2" /> 
+    <label for="email">* Email (required, not published)</label>
+    </p>
+    <p> 
+    <input type="text" id="url" name="url" placeholder="http://www.yourdomain.com" tabindex="3" /> 
+    <label for="email">Website (Optional)</label>
+    </p>
+    <p><label for="comment">* Your Message (required) 10~500s</label> </p>
+    <textarea name="comment" id="commentbox" tabindex="4"></textarea> 
+    <p>
+    <input name="submit" class="submit" type="button" id="submit" tabindex="5" value="Submit Comment" /> 
+    </p>
+    
+    <input type='hidden' value='12' id='postkeyname' /> 
+    <input type='hidden' value='' id='toid' />
+    <p id="text"></p>
+
+</form>
+
+<script>
+
+function testReg(reg,str){
+    return reg.test(str);
+}
+
+$('#submit').click(function(){
+    var emailreg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/g;
+    var urlreg = /^http:\/\/.+\..+/;
+    var email = $('#email').val();
+    var url = $('#url').val();
+    var con = $('#commentbox').val();
+    var author = $('#author').val();
+    
+    if(author.length< 1 || author.length > 30){
+        $('#author').focus();
+        return;
+    }
+        
+    if(!testReg(emailreg,email)){
+        $('#email').focus();
+        return;
+    }
+    if(url.length>0){
+        if(!testReg(urlreg,url)){
+            $('#url').focus();
+            return;
+        }
+    }
+    if(con.length< 10 || con.length > 500){
+        $('#commentbox').focus();
+        return;
+    }
+        
+    $('#submit').attr('disabled', 'disabled');
+    $('#text').html("Sending now.....");
+    
+    $.cookie('author', author, { expires: 365, path: '/' });
+    $.cookie('email', email, { expires: 365, path: '/' });
+    $.cookie('url', url, { expires: 365, path: '/' });
+    
+    $.ajax({
+        type: 'POST',
+        url: '/topic/12/sae-python-%E4%BD%BF%E7%94%A8memcache-%E6%89%8B%E8%AE%B0',
+        dataType: "json",
+        data: {'act': 'postcomment', 'author': author, 'email':email, 'url': url, 'con': con,'postid': $('#postkeyname').val(), 'toid': $('#toid').val()},
+        success: function(data){
+              if(data.status == 200){
+                  $('#commentlist').append(data.msg);
+                  scroll(0,$("#h").position().top);
+                  $('#commentsec').fadeIn("slow");
+                  $('#commentbox').val('');
+                  $('#text').html('');
+                  var cnum = Number($.cookie('usercomnum'));
+                  if(cnum == null){
+                      cnum = 1;
+                  }else{
+                      cnum += 1;
+                  }
+                  $.cookie('usercomnum', cnum, { expires: 1, path: '/' });
+                  $('#submit').removeAttr("disabled");
+                  //window.location.reload();
+              }else{
+                  $('#text').html(data.msg);
+              }
+              $('#submit').removeAttr("disabled");
+        }
+        
+    });
+    
+    return false;
+    
+});
+
+function reply(toid, name){
+    var ct = $('#commentbox');
+    ct.focus();
+    ct.val('@'+name + ' ' + ct.val());
+    $('#toid').val(toid);
+    return false;
+}
+
+$(document).ready(function(){      
+    $('#author').val($.cookie('author'));
+    $('#email').val($.cookie('email'));
+    $('#url').val($.cookie('url'));    
+});
+
+</script>
+    
+    </div>
+    </section> -->
+    <!-- new comment end -->
+    
+    
+</div>
+<!--  block content end -->
+
+{% include 'aside.html' %}
+{% endblock %}

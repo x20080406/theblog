@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% block head %}
+		<title>{% block title %}{% endblock %} - 应用大杂烩</title>
+		<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.0.min.js"></script>
+		{% endblock %}
+	</head>
+	<body>
+		<div id="content">{% block content %}{% endblock %}</div>
+		<div id="footer">
+			{% block footer %}
+			&copy; Copyright 2008 by <a href="http://appfuse.sinaapp.com">tianjie</a>.{% endblock %}
+		</div>
+</body> 

@@ -1,0 +1,67 @@
+{% from 'macros.jinja' import backend_resource_def with context %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="tianjie">
+    <title>{% block title %}{% endblock %} - The Blog</title>
+    {% autoescape false%}
+    	{{backend_resource_def()}}
+    {% endautoescape %}
+  </head>
+  <body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="{{url_for('blog_index')}}">The Blog</a>
+          <div class="nav-collapse collapse">
+	        <ul class="nav navbar-nav">
+	         	 {% for endpoint,caption in [
+		          ('article','文章管理') ,
+		          ('category','分类管理'),
+		          ('tag','标签管理'),
+		          ('login','登陆') if current_user.is_anonymous() else ('logout','退出'),
+		        ] %}
+		        <li {% if endpoint == request.endpoint %}class='active'{% endif %}>
+		        	{% if endpoint  in ['category','article','tag']  %} 
+			        	<a href="{{ url_for(endpoint,page=1) }}">{{caption}}</a>
+			        {% else %}
+			        	<a href="{{ url_for(endpoint) }}">{{caption}}</a><!--{{ endpoint.capitalize() }} -->
+			        {%endif%}
+		        </li>
+		        {% endfor %}
+	          </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="container content-padding" >
+		{% block content %}
+		{% endblock %}
+    </div> <!-- /container -->
+	{% with messages = get_flashed_messages(with_categories=True) %}
+	  {% if messages %}
+	    {% for category, message in messages %}
+	    <script type="text/javascript">
+	         $(document).ready(function(){
+             siteTool.log("{{ message }}",'info');
+	         });
+	    </script>
+	    {% endfor %}
+	  {% endif %}
+	{% endwith %}
+	{% block script %}
+	{% endblock %}
+  </body>
+</html>
+
+

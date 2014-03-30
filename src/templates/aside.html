@@ -1,0 +1,29 @@
+<!-- block sidebar -->
+<aside role=sidebar>
+	<section>
+		<h1>Category</h1>
+		<ul id="Category_list">
+			{% for category in categories%}
+			<li class="category"><a
+				title="{{ category }}"
+				href="{{url_for('blog_category',page=1, param=category )}}"
+			>{{ category }}<span class="tag_meta">({{categories[category]}})</span></a></li> {% endfor %}
+		</ul>
+	</section>
+	<section>
+		<h1>Tag</h1>
+		<p id="top_tags">
+			{% for tag in tags%} <a
+				title="{{tag}}"
+				href="{{url_for('blog_tag', param=tag,page=1)}}"
+			>{{tag}}</a> <span class="tag_meta">({{tags[tag]}})</span> {% endfor %}
+		</p>
+	</section>
+	<section>
+		<h1>友情链接</h1>
+		<p id="top_tags">
+			<a title="python高手" href="http://wpblog.sinaapp.com">ax003d space</a>
+		</p>
+	</section>
+</aside>
+<!-- block sidebar end -->

@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+{% from 'macros.jinja' import render_pagination with context %}
+
+{% block title %}
+首页
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2>分类管理</h2>
+<div class="btn-group ">
+<a class="btn btn-info" href="{{url_for('category_add')}}?p={{page}}">增加</a>
+<a class="btn btn-info" href="#" id='updBtn'>修改</a>
+<a class="btn btn-danger" href="#" id='delBtn'>删除</a>
+</div>
+</div>    
+<table class="table table-condensed table-hover">
+ 	<thead>
+ 		<tr>
+ 			<td> 
+				<label class="checkbox">
+				<input class="checkbox" type="checkbox" id="checkAll">全选</label>
+			</td>
+ 			<td>名称</td>
+ 			<td>序号</td>
+ 			<td>备注</td>
+ 		</tr>
+ 	</thead>
+ 	<tbody>
+ 	{% for item in paginate.items%}
+ 		<tr>
+ 			<td> 
+				<label class="checkbox">
+				<input type="checkbox" name="chkBtn" value="{{item.id}}"> 
+				</label>
+			</td>
+ 			<td>{{item.name}}</td>
+ 			<td>{{item.id_num}}</td>
+ 			<td>{{item.content}}</td>
+ 		</tr>
+ 		{% endfor %}
+ 	</tbody>
+ 	<tfoot>
+ 		<tr>
+ 			<td align="center" colspan="4">
+			 {% autoescape false %}
+ 				{{ render_pagination(paginate,prefix=url_for('category',page=0)[:-2]) }}
+			 {% endautoescape %}
+ 			</td>
+ 		</tr>
+ 	</tfoot>
+</table>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function(){
+	siteTool.bindCheckAllEvt("#checkAll","input[name='chkBtn']")
+	$("#updBtn").click(function(){
+		if($("input:checked[name='chkBtn']").length != 1){
+			siteTool.log("请选择一条需要修改的数据",'info');
+			return;
+		}else{
+			var target = $($("input:checked[name='chkBtn']")[0]).attr("value");
+			var url = "{{ url_for('.category_modify',id=0) }}".replace("\/0\/","/"+target+"/");
+			location.href=url;
+		}
+	});
+	$("#delBtn").click(function(){
+		//ids=$("input:checked[name='chkBtn']").map(function(id,e){return $(this).val();}).get().join('&id=');
+		//location.href='{{url_for("category_remove")}}?id='+ids
+		if($("input:checked[name='chkBtn']").length<=0){
+			siteTool.log("请选择要删除的数据!",'warn');
+			return;
+		}
+		if(!confirm("删除后数据无法恢复！确定删除吗？")){
+			return;
+		}
+		$.ajax({
+			url : '{{url_for("category_remove")}}',
+			type : 'POST',
+			data : {id:$("input:checked[name='chkBtn']").map(function(id,e){return $(this).val();}).get()},
+			traditional : true,
+			success : function(e){
+			siteTool.log('操作成功','success');
+			try{
+				$("input[name='chkBtn']").attr('check',false)
+			}catch(e){
+			
+			}
+			location.reload();
+			},error:function(){
+				siteTool.log('操作失败','error');
+			}
+		});
+	});
+});	
+</script>
+{% endblock%}

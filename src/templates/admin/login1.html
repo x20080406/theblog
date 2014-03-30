@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% from 'macros.jinja' import with_errors with context %}
+
+
+{% block title %}Login{% endblock %}
+{% block content %}
+<form class=form-horizontal action="{{ url_for('login', next=request.args.get('next')) }}" method="post">
+  {% autoescape false %}
+  {{ form.hidden_tag() }}
+  {#{ with_errors(form.username, placeholder='username') }#}
+  {{ form.username(placeholder='username') }}
+  {{ with_errors(form.password, placeholder='passwd') }}
+{% endautoescape %}
+  <div class=control-group>
+    <div class=controls>
+      <label class=checkbox>
+        <input type=checkbox name=remember> Remember me
+      </label>
+      <button type=submit class="btn btn-primary">Login</button>
+    </div>
+  </div>
+</form>
+{{user}}
+{% endblock %}

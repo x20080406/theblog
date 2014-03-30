@@ -1,0 +1,90 @@
+{% from 'macros.jinja' import resource_def with context %}
+{%set SITE_NAME='流水帐'%}{%set SITE_DESC='滴水穿石...'%}
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="zh-CN">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>{{SITE_NAME}} {% if title %}-{%endif%} {% block title %}{% endblock %}</title>
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="320" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+{% autoescape false %}
+	{{ resource_def() }}
+{% endautoescape %}
+<link rel='index' title='TheBlog' href='http://x20080406.sinaapp.com' />
+<meta name="keywords" content="{% block keywords %}{% endblock %}" />
+<script type="text/javascript">
+	$(function() {
+		$("#go-to-top").click(function() {
+			$("html, body").animate({
+				'scrollTop' : 0
+			}, 400);
+			return false;
+		});
+		$(window).scroll(function() {
+			var top = $(document).scrollTop();
+			var g = $("#go-to-top");
+			if (top > 300 && g.is(":hidden")) {
+				g.fadeIn();
+			} else if (top < 300 && g.is(":visible")) {
+				g.fadeOut();
+			}
+		});
+		hljs.initHighlightingOnLoad();
+	})
+</script>
+</head>
+<body>
+	<header role="banner">
+		<hgroup>
+			<h1>
+				<a href="/">{{SITE_NAME}}</a>
+			</h1>
+			<h2>{{SITE_DESC}}</h2>
+		</hgroup>
+	</header>
+	<nav role=navigation>
+		<script type="text/javascript">
+			var dispatch = function() {
+				q = document.getElementById("q");
+				if (q.value != "") {
+					window.open(
+							'http://www.google.com/search?q='+q.value+'%20site:saepy.sinaapp.com', "_blank");
+					return false;
+				} else {
+					return false;
+				}
+			}
+		</script>
+		<form onsubmit="return dispatch()">
+			<fieldset role="site-search">
+				<input class="search" type="search" id="q" placeholder="Search" />
+			</fieldset>
+		</form>
+		<ul role=main-navigation>
+			<li><a href="/">首页</a></li>
+			<li><a href="{{url_for('blog_tags')}}">标签</a></li>
+			<li><a href="{{url_for('blog_categories')}}">分类</a></li>
+			<li><a href="{{url_for('blog_topic',id=1,title='about me')}}">About</a></li>
+		</ul>
+	</nav>
+	<div id="main">
+		<div id="content">
+			<!-- block content -->
+			{% block content %}{% endblock %}
+			<!--  block content end -->
+		</div>
+	</div>
+	<footer>
+		<p>
+			&copy; 2011 Copyright <a href="http://x20080406.sinaapp.com">TheBlog</a> - Powered by <a href="http://x20080406.sinaapp.com"
+				target="_blank">TheBlog</a> - Theme by <a href="http://www.octopress.org/" target="_blank">Octopress</a> - Design by <a href="http://saepy.sinaapp.com/">SAEPy blog</a>
+		</p>
+		<a style="display: none;" rel="nofollow" href="#top" id="go-to-top">▲</a>
+	</footer>
+</body>
+</html>

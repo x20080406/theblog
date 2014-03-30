@@ -1,0 +1,98 @@
+{% from 'macros.jinja' import with_errors with context %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>用户登陆</title>
+	<link rel=stylesheet media=screen href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<script src="{{ url_for('static', filename='js/jquery-1.8.3.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/site.js') }}"></script>
+</head>
+<body>
+	<div class="container">
+		<form class=form-horizontal action="{{ url_for('login', next=request.args.get('next')) }}" method="post">
+		<section class="loginBox row-fluid">
+			<section>
+				<h2>系统登录</h2>
+				  {% autoescape false %}
+					  {{ form.hidden_tag() }}
+				  {% endautoescape %}
+					  <div class="control-group">
+						  <div class="input-prepend">
+						<span class="add-on"><i class="icon-user"></i></span>
+						{{ form.username(placeholder='用户名') }}
+						</div>
+					</div>
+					 <div class="control-group">
+						 <div class="input-prepend">
+						<span class="add-on"><i class="icon-lock"></i></span>
+						{{ form.passwd(placeholder='密码') }}
+						</div>
+					</div>
+				<section class="row-fluid clearfix">
+					<section class="span8 lh30">
+						<label><input type="checkbox" name="remember" />下次自动登录</label>
+					</section>
+					<section class="span4">
+						<input type="submit" value="登录" class="btn btn-primary pull-right" />
+					</section>
+				</section>
+			</section>
+		</section>
+		<!-- /loginBox -->
+		</form>
+	</div>
+	<!-- /container -->
+	{% with messages = get_flashed_messages(with_categories=True) %}
+	  {% if messages %}
+	    <script type="text/javascript">
+	         $(document).ready(function(){
+			    {% for category, message in messages %}
+		        	siteTool.log("{{ message }}",'error');
+			    {% endfor %}
+	         });
+	    </script>
+	  {% endif %}
+	{% endwith %}
+	
+	<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	body{background: #444 url(http://sandbox.runjs.cn/uploads/rs/418/nkls38xx/carbon_fibre_big.png)}
+	.loginBox {
+		width: 246px;
+		height: 230px;
+		padding: 0 20px;
+		border: 1px solid #fff;
+		color: #000;
+		margin-top: 40px;
+		border-radius: 8px;
+		background: white;
+		box-shadow: 0 0 15px #222;
+		background: -moz-linear-gradient(top, #fff, #efefef 8%);
+		background: -webkit-gradient(linear, 0 0, 0 100%, from(#f6f6f6), to(#f4f4f4) );
+		font: 11px/1.5em 'Microsoft YaHei';
+		position: absolute;
+		left: 48.5%;
+		top: 48.5%;
+		margin-left: -123px;
+		margin-top: -115px;
+	}
+	
+	.loginBox h2 {
+		height: 45px;
+		font-size: 20px;
+		font-weight: normal;
+	}
+	
+	.loginBox .left {
+		border-right: 1px solid #ccc;
+		height: 100%;
+		padding-right: 20px;
+	}
+	</style>
+</body>
+</html>
